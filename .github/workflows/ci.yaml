@@ -1,0 +1,35 @@
+---
+name: Ansible Playbook CI
+
+on:  # yamllint disable-line rule:truthy
+  push:
+  pull_request:
+
+jobs:
+
+  lint:
+    name: 🧹 lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip3 install -r requirements.txt
+
+      - name: yamllint
+        run: yamllint .
+
+      - name: ansible-lint main playbook
+        run: ansible-lint main.yaml
+
+      - name: ansible-lint all other yaml files
+        run: ansible-lint
+
+      - name: Ansible syntax check main playbook
+        run: ansible-playbook --syntax-check -i inventory/hosts main.yml

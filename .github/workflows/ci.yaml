@@ -26,14 +26,14 @@ jobs:
       - name: Install dependencies
         run: pip3 install -r requirements.txt
 
-      - name: yamllint
+      - name: Lint yaml files
         run: yamllint .
 
-      - name: ansible-lint main playbook
+      - name: Lint ansible playbook main.yaml
         run: ansible-lint main.yaml
 
-      - name: ansible-lint all other yaml files
+      - name: Lint all other ansible files
         run: ansible-lint
 
-      - name: Ansible syntax check main playbook
+      - name: Syntax check ansible playbook main.yaml
         run: ansible-playbook --syntax-check -i inventory/hosts main.yaml

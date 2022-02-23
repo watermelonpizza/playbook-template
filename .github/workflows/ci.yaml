@@ -16,13 +16,22 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Lint yaml files using yamllint
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip3 install -r requirements.txt
+
+      - name: yamllint
         run: yamllint .
 
-      - name: Lint Ansible Playbook using ansible-lint action
-        uses: ansible/ansible-lint-action@master
-        with:
-          targets: ""
+      - name: ansible-lint main playbook
+        run: ansible-lint main.yaml
+
+      - name: ansible-lint all other yaml files
+        run: ansible-lint
 
       - name: Ansible syntax check main playbook
         run: ansible-playbook --syntax-check -i inventory/hosts main.yaml

@@ -3,6 +3,8 @@ name: Ansible Playbook CI
 
 on:  # yamllint disable-line rule:truthy
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -18,18 +20,20 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
 
       - name: Install dependencies
         run: pip3 install -r requirements.txt
 
-      - name: yamllint
+      - name: Lint yaml files
         run: yamllint .
 
-      - name: ansible-lint main playbook
+      - name: Lint ansible playbook main.yaml
         run: ansible-lint main.yaml
 
-      - name: ansible-lint all other yaml files
+      - name: Lint all other ansible files
         run: ansible-lint
 
-      - name: Ansible syntax check main playbook
-        run: ansible-playbook --syntax-check -i inventory/hosts main.yml
+      - name: Syntax check ansible playbook main.yaml
+        run: ansible-playbook --syntax-check -i inventory/hosts main.yaml
